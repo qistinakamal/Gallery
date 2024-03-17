@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anybody:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet">
+</head>
+
+<body>
+  <h1>Image Finder</h1>
+  <form action="">
+    <div class="search" id="">
+      <input type="text" name="search" placeholder="Search or type" id="searchInput">
+    
+      <button type="click" name="search" id="searchButton" onclick="">Search</button>
+    </div>
+  </form>
+  
+  <div id="app">
+    <!--
+    //kita nak buat website yg boleh search gambar based on input
+    //create search-bar dengan button yg boleh submit untuk search
+    //create function api yg bila kita type, then click submit button,api akan search based on keyword yg kita input
+    -->
+  </div>
+</body>
+<script>
+
+  /*
+    //nak dptkan data from https://jsonplaceholder.typicode.com/todos/
+    fetch('https://jsonplaceholder.typicode.com/todos/')
+    .then(response => {debugger})//kita tak tahu exactly the format, so kita masuk debugger
+    .catch(err => {debugger})
+  */
+
+  //method index
+
+  //xWRblrtnWb9D60VexYMJsIovTKgO05ApjTLBsqDetSwoOc9lMTpbNCQr
+
+
+  fetch('https://api.pexels.com/v1/curated?page=2&per_page=40',{
+    headers: {
+      'Authorization':'xWRblrtnWb9D60VexYMJsIovTKgO05ApjTLBsqDetSwoOc9lMTpbNCQr'
+    }
+  })
+  .then(response => response.json())
+  .then( body => {
+      const imageList = body.photos.map((photo) => (
+        `<img src="${photo.src.large}"/>`
+      ))
+      return imageList
+    })
+  .then(todoList => {
+    document.getElementById('app').innerHTML = todoList
+  })
+  .catch((err) => {debugger})
+  
+  const searchInput = document.getElementById('searchInput')
+  const searchButton = document.getElementById('searchButton')
+  const searchResults = document.getElementById('app')
+
+  let query = ''
+  let page = 1
+
+
+  function searchPhotos(){
+    query = searchInput.value
+
+    fetch(`https://api.pexels.com/v1/search?query=${query}&per_page=10`, {
+      headers: {
+        'Authorization': 'xWRblrtnWb9D60VexYMJsIovTKgO05ApjTLBsqDetSwoOc9lMTpbNCQr'
+      }
+    })
+      .then(response => response.json()) //kita convert data yg kita receive ke json format
+      .then(body => {
+        const imageList = body.photos.map((photo) => (
+          `<img src="${photo.src.large}"/>`
+        ))
+
+        return imageList
+      })
+      .then(list => {
+        document.getElementById('app').innerHTML = list
+      })
+      .catch(err => { debugger })
+  }
+
+
+  searchButton.addEventListener('click', (e) => {
+    e.preventDefault()
+    const query = searchInput.value
+    console.log(query)
+    
+    searchPhotos()
+  })
+  
+
+</script>
+
+</html>
